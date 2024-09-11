@@ -13,14 +13,14 @@ export const fetchHeroes = async () => {
   return response.data.data.results
 }
 
-export const fetchHeroById = async (id) => {
+export const fetchHeroById = async (id: number) => {
   const response = await axios.get(
     `https://gateway.marvel.com/v1/public/characters/${id}?ts=${ts}&apikey=${publicKey}&hash=${hash}`
   )
   return response.data.data.results[0]
 }
 
-export const fetchComicsByHeroId = async (id) => {
+export const fetchComicsByHeroId = async (id: number) => {
   const response = await axios.get(
     `https://gateway.marvel.com/v1/public/characters/${id}/comics?ts=${ts}&apikey=${publicKey}&hash=${hash}`
   )

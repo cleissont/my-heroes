@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react"
 import { fetchHeroById, fetchComicsByHeroId } from "../../services/marvelAPI"
 import Footer from "@/app/components/Footer"
+import "../../styles/Footer.css"
 import "../../styles/HeroProfile.css"
 
 // Define the Hero type
@@ -32,21 +33,33 @@ interface Comic {
 
 const HeroProfile = ({ params }: { params: { id: string } }) => {
   const { id } = params
-  const [hero, setHero] = useState<Hero | null>(null) // Typed state for hero
-  const [comics, setComics] = useState<Comic[]>([]) // Typed state for comics
+  const [hero, setHero] = useState<Hero | null>(null)
+  const [comics, setComics] = useState<Comic[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (id) {
-      fetchHeroById(id).then((data) => setHero(data))
-      fetchComicsByHeroId(id).then((data) => setComics(data.slice(0, 5)))
+      const numericId = Number(id) // Convert the string id to a number
+
+      if (!isNaN(numericId)) {
+        Promise.all([fetchHeroById(numericId), fetchComicsByHeroId(numericId)])
+          .then(([heroData, comicsData]) => {
+            setHero(heroData)
+            setComics(comicsData.slice(0, 5))
+          })
+          .finally(() => setLoading(false))
+      } else {
+        console.error("Invalid hero id:", id)
+        setLoading(false)
+      }
     }
   }, [id])
 
-  if (!hero) {
-    return <div>Carregando...</div>
+  if (loading) {
+    return <div className='spinner'>Carregando...</div>
   }
 
-  const heroBackgroundImage = `${hero.thumbnail.path}.${hero.thumbnail.extension}`
+  const heroBackgroundImage = `${hero?.thumbnail.path}.${hero?.thumbnail.extension}`
 
   return (
     <div
@@ -60,12 +73,12 @@ const HeroProfile = ({ params }: { params: { id: string } }) => {
       </div>
       <div className='hero-details'>
         <img
-          src={`${hero.thumbnail.path}.${hero.thumbnail.extension}`}
-          alt={hero.name}
+          src={`${hero?.thumbnail.path}.${hero?.thumbnail.extension}`}
+          alt={hero?.name}
         />
         <div>
-          <h2>{hero.name}</h2>
-          <p>{hero.description || "Nenhuma descrição disponível."}</p>
+          <h2>{hero?.name}</h2>
+          <p>{hero?.description || "Nenhuma descrição disponível."}</p>
         </div>
       </div>
 
@@ -89,8 +102,9 @@ const HeroProfile = ({ params }: { params: { id: string } }) => {
           ))}
         </div>
       </div>
-
-      <Footer />
+      <div>
+        <Footer />
+      </div>
     </div>
   )
 }

@@ -7,12 +7,22 @@ import Footer from "../app/components/Footer"
 import "../app/styles/HomePage.css"
 import { useFavorites } from "../app/context/FavoritesContext"
 
+// Define the Hero type
+interface Hero {
+  id: number
+  name: string
+  thumbnail: {
+    path: string
+    extension: string
+  }
+}
+
 const PAGE_SIZE = 8
 
 const HomePage = () => {
-  const [heroes, setHeroes] = useState([])
+  const [heroes, setHeroes] = useState<Hero[]>([]) // Typed state for heroes
   const [searchTerm, setSearchTerm] = useState("")
-  const [filteredHeroes, setFilteredHeroes] = useState([])
+  const [filteredHeroes, setFilteredHeroes] = useState<Hero[]>([]) // Typed state for filtered heroes
   const [showFavorites, setShowFavorites] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const { favorites } = useFavorites()
@@ -46,7 +56,7 @@ const HomePage = () => {
     currentPage * PAGE_SIZE
   )
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
   }
 

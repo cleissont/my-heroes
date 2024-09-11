@@ -25,7 +25,7 @@ const HomePage = () => {
   const [filteredHeroes, setFilteredHeroes] = useState<Hero[]>([]) // Typed state for filtered heroes
   const [showFavorites, setShowFavorites] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const { favorites } = useFavorites()
+  const { favorites } = useFavorites() // Assuming favorites is an array of hero IDs (number[])
 
   useEffect(() => {
     fetchHeroes().then((data) => setHeroes(data))
@@ -35,6 +35,7 @@ const HomePage = () => {
     let heroesToFilter = heroes
 
     if (showFavorites) {
+      // Filter heroes based on whether their ID exists in the favorites array
       heroesToFilter = heroes.filter((hero) => favorites.includes(hero.id))
     }
 

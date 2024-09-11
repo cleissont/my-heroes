@@ -26,10 +26,16 @@ const HomePage = () => {
   const [filteredHeroes, setFilteredHeroes] = useState<Hero[]>([]) // Typed state for filtered heroes
   const [showFavorites, setShowFavorites] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [loading, setLoading] = useState(true) // New state for loading
   const { favorites } = useFavorites() // Assuming favorites contains Hero objects, not just IDs
 
   useEffect(() => {
-    fetchHeroes().then((data) => setHeroes(data))
+    fetchHeroes()
+      .then((data) => {
+        setHeroes(data)
+        setLoading(false) // Stop loading when data is fetched
+      })
+      .catch(() => setLoading(false)) // Stop loading even on error
   }, [])
 
   useEffect(() => {
@@ -111,40 +117,49 @@ const HomePage = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className='favorites-button-wrapper'>
-          <button className='favorites-button' onClick={toggleShowFavorites}>
-            {showFavorites ? "Mostrar Todos" : "❤️ Somente favoritos"}
-          </button>
-        </div>
       </div>
-
-      <div className='hero-grid'>
-        {paginatedHeroes.length > 0 ? (
-          paginatedHeroes.map((hero) => <HeroCard key={hero.id} hero={hero} />)
-        ) : (
-          <p>
-            {showFavorites
-              ? "Nenhum favorito encontrado."
-              : "Nenhum herói encontrado."}
-          </p>
-        )}
-      </div>
-
-      <div className='pagination'>
-        <button
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          &lt;
-        </button>
-        {renderPageButtons()}
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => handlePageChange(currentPage + 1)}
-        >
-          &gt;
+      <div className='favorites-button-wrapper'>
+        <span>{`Encontrados ${filteredHeroes.length} heróis`}</span>
+        <button className='favorites-button' onClick={toggleShowFavorites}>
+          {showFavorites ? "Mostrar Todos" : "❤️ Somente favoritos"}
         </button>
       </div>
+
+      {loading ? (
+        <div className='loading-spinner'>Carregando...</div>
+      ) : (
+        <>
+          <div className='hero-grid'>
+            {paginatedHeroes.length > 0 ? (
+              paginatedHeroes.map((hero) => (
+                <HeroCard key={hero.id} hero={hero} />
+              ))
+            ) : (
+              <p>
+                {showFavorites
+                  ? "Nenhum favorito encontrado."
+                  : "Nenhum herói encontrado."}
+              </p>
+            )}
+          </div>
+
+          <div className='pagination'>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              &lt;
+            </button>
+            {renderPageButtons()}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              &gt;
+            </button>
+          </div>
+        </>
+      )}
 
       <Footer />
     </div>

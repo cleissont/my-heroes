@@ -34,7 +34,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 50px;
 }
 
 .search-bar-wrapper {
@@ -68,6 +67,10 @@
 }
 
 .favorites-button-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 60%;
   margin-bottom: 50px;
 }
 

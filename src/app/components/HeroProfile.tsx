@@ -39,8 +39,16 @@ const HeroProfile: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      fetchHeroById(id).then((data) => setHero(data))
-      fetchComicsByHeroId(id).then((data) => setComics(data.slice(0, 5)))
+      const heroId = Array.isArray(id) ? id[0] : id
+
+      const numericId = Number(heroId)
+
+      if (!isNaN(numericId)) {
+        fetchHeroById(numericId).then((data) => setHero(data))
+        fetchComicsByHeroId(numericId).then((data) =>
+          setComics(data.slice(0, 5))
+        )
+      }
     }
   }, [id])
 

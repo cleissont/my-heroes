@@ -5,10 +5,35 @@ import { fetchHeroById, fetchComicsByHeroId } from "../../services/marvelAPI"
 import Footer from "@/app/components/Footer"
 import "../../styles/HeroProfile.css"
 
+// Define the Hero type
+interface Hero {
+  id: number
+  name: string
+  description: string
+  thumbnail: {
+    path: string
+    extension: string
+  }
+}
+
+interface Comic {
+  id: number
+  title: string
+  pageCount: number
+  description: string
+  thumbnail: {
+    path: string
+    extension: string
+  }
+  dates: {
+    date: string
+  }[]
+}
+
 const HeroProfile = ({ params }: { params: { id: string } }) => {
   const { id } = params
-  const [hero, setHero] = useState(null)
-  const [comics, setComics] = useState([])
+  const [hero, setHero] = useState<Hero | null>(null) // Typed state for hero
+  const [comics, setComics] = useState<Comic[]>([]) // Typed state for comics
 
   useEffect(() => {
     if (id) {
@@ -35,7 +60,7 @@ const HeroProfile = ({ params }: { params: { id: string } }) => {
       </div>
       <div className='hero-details'>
         <img
-          src={hero.thumbnail.path + "." + hero.thumbnail.extension}
+          src={`${hero.thumbnail.path}.${hero.thumbnail.extension}`}
           alt={hero.name}
         />
         <div>
@@ -49,7 +74,7 @@ const HeroProfile = ({ params }: { params: { id: string } }) => {
           {comics.map((comic) => (
             <div key={comic.id} className='comic-card'>
               <img
-                src={comic.thumbnail.path + "." + comic.thumbnail.extension}
+                src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
                 alt={comic.title}
               />
               <div className='comic-info'>
@@ -58,7 +83,6 @@ const HeroProfile = ({ params }: { params: { id: string } }) => {
                   <p>{comic.dates[0].date.split("T")[0]}</p>
                   <p>{comic.pageCount} páginas</p>
                 </div>
-
                 <p>{comic.description?.slice(0, 200) || "Sem descrição."}...</p>
               </div>
             </div>

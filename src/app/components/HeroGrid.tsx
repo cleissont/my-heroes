@@ -21,15 +21,16 @@ const HeroGrid: React.FC = () => {
 
   return (
     <div className='hero-grid'>
-      {heroes.map((hero) => (
-        <div key={hero.id}>
-          <img
-            src={`${hero.thumbnail.path}.${hero.thumbnail.extension}`}
-            alt={hero.name}
-          />
-          <h3>{hero.name}</h3>
-        </div>
-      ))}
+      {Array.isArray(heroes) &&
+        heroes.map((hero) => (
+          <div key={hero.id}>
+            <img
+              src={`${hero.thumbnail.path}.${hero.thumbnail.extension}`}
+              alt={hero.name}
+            />
+            <h3>{hero.name}</h3>
+          </div>
+        ))}
     </div>
   )
 }

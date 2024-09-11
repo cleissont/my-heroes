@@ -1,44 +1,28 @@
+// heroesSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 interface Hero {
   id: number
   name: string
-  image: string
-  isFavorite: boolean
+  thumbnail: {
+    path: string
+    extension: string
+  }
 }
 
-interface HeroesState {
-  allHeroes: Hero[]
-  favorites: number[]
-}
+type HeroesState = Hero[]
 
-const initialState: HeroesState = {
-  allHeroes: [],
-  favorites: [],
-}
+const initialState: HeroesState = []
 
 const heroesSlice = createSlice({
   name: "heroes",
   initialState,
   reducers: {
-    setHeroes(state, action: PayloadAction<Hero[]>) {
-      state.allHeroes = action.payload
-    },
-    toggleFavorite(state, action: PayloadAction<number>) {
-      const heroId = action.payload
-      if (state.favorites.includes(heroId)) {
-        state.favorites = state.favorites.filter((id) => id !== heroId)
-      } else {
-        state.favorites.push(heroId)
-      }
-      localStorage.setItem("favorites", JSON.stringify(state.favorites))
-    },
-    setFavorites(state, action: PayloadAction<number[]>) {
-      state.favorites = action.payload
+    setHeroes: (state, action: PayloadAction<Hero[]>) => {
+      return action.payload
     },
   },
 })
 
-export const { setHeroes, toggleFavorite, setFavorites } = heroesSlice.actions
-
+export const { setHeroes } = heroesSlice.actions
 export default heroesSlice.reducer

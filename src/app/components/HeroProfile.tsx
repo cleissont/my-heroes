@@ -6,11 +6,36 @@ import { fetchHeroById, fetchComicsByHeroId } from "../services/marvelAPI"
 import Footer from "../components/Footer"
 import "../../styles/HeroProfile.css"
 
-const HeroProfile = () => {
+// Define the Hero type
+interface Hero {
+  id: number
+  name: string
+  description: string
+  thumbnail: {
+    path: string
+    extension: string
+  }
+}
+
+interface Comic {
+  id: number
+  title: string
+  pageCount: number
+  description: string
+  thumbnail: {
+    path: string
+    extension: string
+  }
+  dates: {
+    date: string
+  }[]
+}
+
+const HeroProfile: React.FC = () => {
   const router = useRouter()
   const { id } = router.query
-  const [hero, setHero] = useState(null)
-  const [comics, setComics] = useState([])
+  const [hero, setHero] = useState<Hero | null>(null) // Typed state for hero
+  const [comics, setComics] = useState<Comic[]>([]) // Typed state for comics
 
   useEffect(() => {
     if (id) {
@@ -35,7 +60,7 @@ const HeroProfile = () => {
       <h3>Quadrinhos</h3>
       <div className='hero-details'>
         <img
-          src={hero.thumbnail.path + "." + hero.thumbnail.extension}
+          src={`${hero.thumbnail.path}.${hero.thumbnail.extension}`}
           alt={hero.name}
         />
         <div>
@@ -49,7 +74,7 @@ const HeroProfile = () => {
           {comics.map((comic) => (
             <div key={comic.id} className='comic-card'>
               <img
-                src={comic.thumbnail.path + "." + comic.thumbnail.extension}
+                src={`${comic.thumbnail.path}.${comic.thumbnail.extension}`}
                 alt={comic.title}
               />
               <div className='comic-info'>

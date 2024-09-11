@@ -1,0 +1,141 @@
+.hero-profile {
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  padding: 150px 20px;
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  color: white;
+}
+
+.hero-profile::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+.hero-profile h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0;
+  z-index: 2;
+}
+
+.hero-profile p {
+  font-size: 1.6rem;
+  margin: 20px 0;
+  z-index: 2;
+}
+
+.hero-details {
+  position: relative;
+  z-index: 2;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-details img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-right: 20px;
+  object-fit: cover;
+}
+
+.hero-details h2 {
+  margin: 0;
+  font-size: 2rem;
+  color: #333;
+}
+
+.hero-details p {
+  margin: 10px 0 0;
+  font-size: 1rem;
+  color: #666;
+}
+
+.hero-comics {
+  position: relative;
+  z-index: 2;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  flex-grow: 1;
+}
+
+.hero-comics h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #333;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.comics-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.comic-card {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-radius: 15px;
+  background: #f8f8f8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.comic-card img {
+  width: 20%;
+  height: 10%;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.comic-info {
+  flex: 1;
+}
+
+.comic-card h4 {
+  margin: 0 0 5px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.comic-card p {
+  margin: 0 0 5px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.comic-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #999;
+  margin-top: 5px;
+}

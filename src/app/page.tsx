@@ -1,95 +1,141 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client"
 
-export default function Home() {
+import React, { useEffect, useState } from "react"
+import { fetchHeroes } from "../app/services/marvelAPI"
+import HeroCard from "../app/components/HeroCard"
+import Footer from "../app/components/Footer"
+import "../app/styles/HomePage.css"
+import { useFavorites } from "../app/context/FavoritesContext"
+
+const PAGE_SIZE = 8
+
+const HomePage = () => {
+  const [heroes, setHeroes] = useState([])
+  const [searchTerm, setSearchTerm] = useState("")
+  const [filteredHeroes, setFilteredHeroes] = useState([])
+  const [showFavorites, setShowFavorites] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const { favorites } = useFavorites()
+
+  useEffect(() => {
+    fetchHeroes().then((data) => setHeroes(data))
+  }, [])
+
+  useEffect(() => {
+    let heroesToFilter = heroes
+
+    if (showFavorites) {
+      heroesToFilter = heroes.filter((hero) => favorites.includes(hero.id))
+    }
+
+    setFilteredHeroes(
+      heroesToFilter.filter((hero) =>
+        hero.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    )
+  }, [searchTerm, heroes, showFavorites, favorites])
+
+  const toggleShowFavorites = () => {
+    setShowFavorites((prevState) => !prevState)
+    setCurrentPage(1)
+  }
+
+  const totalPages = Math.ceil(filteredHeroes.length / PAGE_SIZE)
+  const paginatedHeroes = filteredHeroes.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  )
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage)
+  }
+
+  const renderPageButtons = () => {
+    const buttons = []
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push(
+        <button
+          key={i}
+          className={currentPage === i ? "active" : ""}
+          onClick={() => handlePageChange(i)}
+        >
+          {i}
+        </button>
+      )
+    }
+    return buttons
+  }
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className='homepage'>
+      <header className='homepage-header'>
+        <h1 className='homepage-h1'>Explore o Universo e Crie Sua Equipe</h1>
+        <p>
+          Os melhores personagens já feitos em quadrinhos. Fique viciado em uma
+          generosa porção de heróis e vilões!
+        </p>
+      </header>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+      <div className='search-bar-container'>
+        <div className='search-bar-wrapper'>
+          <div className='search-icon'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              height='1.2rem'
+              viewBox='0 0 24 24'
+              width='1.2rem'
+              fill='#f5b5b5'
+            >
+              <path d='M0 0h24v24H0V0z' fill='none' />
+              <path d='M15.5 14h-.79l-.28-.27a6.518 6.518 0 001.48-5.34C14.82 5.59 12.42 3.51 9.5 3.5A6.5 6.5 0 003 9.5c0 3.59 2.91 6.5 6.5 6.5 1.61 0 3.09-.59 4.27-1.56l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z' />
+            </svg>
+          </div>
+          <input
+            type='text'
+            placeholder='Procure por heróis'
+            className='search-bar'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <div className='favorites-button-wrapper'>
+          <button className='favorites-button' onClick={toggleShowFavorites}>
+            {showFavorites ? "Mostrar Todos" : "❤️ Somente favoritos"}
+          </button>
+        </div>
+      </div>
+
+      <div className='hero-grid'>
+        {paginatedHeroes.length > 0 ? (
+          paginatedHeroes.map((hero) => <HeroCard key={hero.id} hero={hero} />)
+        ) : (
+          <p>
+            {showFavorites
+              ? "Nenhum favorito encontrado."
+              : "Nenhum herói encontrado."}
+          </p>
+        )}
+      </div>
+
+      <div className='pagination'>
+        <button
+          disabled={currentPage === 1}
+          onClick={() => handlePageChange(currentPage - 1)}
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          &lt;
+        </button>
+        {renderPageButtons()}
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => handlePageChange(currentPage + 1)}
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          &gt;
+        </button>
+      </div>
+
+      <Footer />
     </div>
-  );
+  )
 }
+
+export default HomePage
